@@ -53,11 +53,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                                 Err( ref err ) if err.kind() == io::ErrorKind::WouldBlock => continue,
                                 err => {
                                     err?;
-                                }
+                                }   
                             }
                         }
                     }
-                    
+
                     if event.is_writable() {
                         if let Some( ref mut handle ) = &mut server_handle {
                             match handle.write( SERVER_HELLO ) {
