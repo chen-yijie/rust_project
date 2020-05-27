@@ -146,7 +146,7 @@ impl<'a> Tokenizer <'a> {
         let mut value = String::new();
         let mut escape = false;
 
-        while let Some(ch) = self.source.next() {
+        while let Some( ch ) = self.source.next() {
             if ch == first && !escape {
                 return value;
             }
@@ -154,13 +154,13 @@ impl<'a> Tokenizer <'a> {
                 '\\' => {
                     if escape {
                         escape = false;
-                        value.push(ch);
+                        value.push( ch );
                     } else {
                         escape = true;
                     }
                 }
                 _ => {
-                    value.push(ch);
+                    value.push( ch );
                     escape = false;
                 }
             }
@@ -197,7 +197,7 @@ impl<'a> Iterator for Tokenizer<'a> {
                     if ch.is_whitespace() {
                         continue 'lex;
                     } else {
-                        panic!("Invalid character: {}", ch);
+                        panic!( "Invalid character: {}", ch );
                     }
                 }
             });
@@ -268,11 +268,11 @@ impl<'a> Parser<'a> {
                 Token::Comma => {
                     let key = match self.step() {
                         Token::String( key ) => key,
-                        token => panic!("Unexpected token {:?}", token),
+                        token => panic!( "Unexpected token {:?}", token ),
                     };
                     match self.step() {
                         Token::Colon => {}
-                        token => panic!("Unexpected token {:?}", token),
+                        token => panic!( "Unexpected token {:?}", token ),
                     }
 
                     let value = self.parse();
@@ -291,7 +291,7 @@ impl<'a> Parser<'a> {
     fn parse_from( &mut self, token: Token ) -> Json {
         match token {
             Token::Null => Json::Null,
-            Token::String( s) => Json::String( s ),
+            Token::String( s ) => Json::String( s ),
             Token::Number( n ) => Json::Number( n ),
             Token::Boolean( b ) => Json::Boolean( b ),
             Token::BracketOn => self.parse_array(),
@@ -346,7 +346,7 @@ fn main() {
                   "网络安全": 95,
                   "Linux操作系统": 98,
                   "SQL数据库": 88,
-                  "数据结构": 89
+                  "数据结构": 89  
                 },
                 "weight": 55
               }
