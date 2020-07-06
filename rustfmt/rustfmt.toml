@@ -1,3 +1,10 @@
-error_on_line_overflow = true
-error_on_unformatted = true
-max_width = 350
+edition = "2018"
+
+#自动加入函数注释
+format_code_in_doc_comments = true
+
+format_strings = true
+
+spaces_around_ranges = true
+
+brace_style = "PreferSameLine"

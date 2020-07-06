@@ -1,13 +1,21 @@
+/*
+set CFG_RELEASE=1.46.0-nightly
+set CFG_RELEASE_CHANNEL=nightly
+cargo build --all-features
+*/
+
 //
 // 修改rustfmt\src\formatting\visitor.rs文件
 //
 
 pub( crate ) fn format_separate_mod( &mut self, m: &Module<'_>, end_pos: BytePos ) {
     self.block_indent = Indent::empty();
+
     if self.visit_attrs( m.attrs(), ast::AttrStyle::Inner ) {
         self.push_skipped_with_span( m.attrs(), m.as_ref().inner, m.as_ref().inner );
     } else {
         self.walk_mod_items( m.as_ref() );
+
         self.format_missing_with_indent( end_pos );
 
         //
@@ -16,6 +24,7 @@ pub( crate ) fn format_separate_mod( &mut self, m: &Module<'_>, end_pos: BytePos
         //
         use onig::Captures;
         use onig::Regex;
+
         // 1. 左括号+1的字符如果是右括号，不做处理
         // 2. 左括号+1的字符如果是空格，不做处理
         // 3. 左括号+1的字符如果是其他字符，将左括号替换成空格
@@ -24,12 +33,16 @@ pub( crate ) fn format_separate_mod( &mut self, m: &Module<'_>, end_pos: BytePos
         // 匹配左括号
         let left = Regex::new( r#"(?<!(?:\/\/|"|').*)\((?!=\s|\)|[ ]|\s)"# ).unwrap();
 
-        self.buffer = left.replace_all( &self.buffer, |caps: &Captures| format!( "{} ", caps.at(0).unwrap_or("" ) ) );
+        self.buffer = left.replace_all( &self.buffer, |caps: &Captures| {
+            format!( "{} ", caps.at(0).unwrap_or("" ) )
+        } );
 
         // 匹配右括号
         let right = Regex::new( r#"(?<!(?:\/\/).*)(?<!\(|[ ])\)(?!.*(?:\"|\'))"# ).unwrap();
 
-        self.buffer = right.replace_all( &self.buffer, |caps: &Captures| format!( " {}", caps.at(0).unwrap_or("" ) ) );
+        self.buffer = right.replace_all( &self.buffer, |caps: &Captures| {
+            format!( " {}", caps.at(0).unwrap_or("" ) )
+        } );
 
         //println!( "{}", self.buffer );
         /*
@@ -44,7 +57,6 @@ pub( crate ) fn format_separate_mod( &mut self, m: &Module<'_>, end_pos: BytePos
         self.buffer.clear();*/
     }
 }
-
 
 fn main() {
     println!( "Hello, world!" );
