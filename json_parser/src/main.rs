@@ -195,7 +195,7 @@ impl<'a> Iterator for Tokenizer<'a> {
                 }
                 _  => {
                     if ch.is_whitespace() {
-                        continue 'lex;
+                        continue 'lex;    
                     } else {
                         panic!( "Invalid character: {}", ch );
                     }
