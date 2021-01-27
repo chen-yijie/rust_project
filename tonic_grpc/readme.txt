@@ -48,6 +48,17 @@ openssl x509 -req -passin pass:123456 -days 18250 -sha256 -extensions v3_req -ex
 12.CER转PEM
 openssl x509 -in server.cer
 
+13 转成
+PEM转成PKCS12文件（包含CA证书、不包含CA证书）
+openssl pkcs12 -export -inkey serverprikey.pem -in server.pem -CAfile demoCA/cacert.pem -password pass:"123456" -out server.pfx
+openssl pkcs12 -export -inkey server_private.key -in server.cer -password pass:"123456" -out server_nocret.pfx
+
+2）PKCS12转成PEM文件
+openssl pkcs12 -in server_nocret.pfx -out server_nocret.pem -nodes -password pass:"123456"
+
+3）查看pkcs12信息
+openssl pkcs12 -in server.pfx -password pass:"123456" -info -nocerts –nokeys
+
 
 
 

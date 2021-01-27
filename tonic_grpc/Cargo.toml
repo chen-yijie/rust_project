@@ -15,6 +15,7 @@ name = "client"
 path = "src/client.rs"
 
 [dependencies]
+rustls = "0.18.0"
 tonic = { version = "0.3", features = ["tls"] }
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros", "fs"] }
