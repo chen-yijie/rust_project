@@ -4,6 +4,45 @@ set CFG_RELEASE_CHANNEL=nightly
 cargo build --all-features
 */
 
+pub(crate) fn format_separate_mod(&mut self, m: &Module<'_>, end_pos: BytePos) {
+        self.block_indent = Indent::empty();
+        let skipped = self.visit_attrs(m.attrs(), ast::AttrStyle::Inner);
+        assert!(
+            !skipped,
+            "Skipping module must be handled before reaching this line.",
+        );
+
+        self.walk_mod_items(m.as_ref());
+        self.format_missing_with_indent(end_pos);
+		
+		//
+        // 需要正则 lookahead lookbehind特性所以使用onig::Regex
+        // https://blog.csdn.net/liuxiao723846/article/details/83278067
+        //
+        use onig::Captures;
+        use onig::Regex;
+
+        // 1. 左括号+1的字符如果是右括号，不做处理
+        // 2. 左括号+1的字符如果是空格，不做处理
+        // 3. 左括号+1的字符如果是其他字符，将左括号替换成空格
+        // 4. 如果是注释行// 就不处理。如果括号在""里面表示是字符串也不处理
+
+        // 匹配左括号
+        let left = Regex::new( r#"(?<!(?:\/\/|"|').*)\((?!=\s|\)|[ ]|\s)"# ).unwrap();
+
+        self.buffer = left.replace_all( &self.buffer, |caps: &Captures<'_>| {
+            format!( "{} ", caps.at(0).unwrap_or("" ) )
+        } );
+
+        // 匹配右括号
+        let right = Regex::new( r#"(?<!(?:\/\/).*)(?<!\(|[ ])\)(?!.*(?:\"|\'))"# ).unwrap();
+
+        self.buffer = right.replace_all( &self.buffer, |caps: &Captures<'_>| {
+            format!( " {}", caps.at(0).unwrap_or("" ) )
+        } );
+    }
+
+	
 //
 // 修改rustfmt\src\formatting\visitor.rs文件
 //
